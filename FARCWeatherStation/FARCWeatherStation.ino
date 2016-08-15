@@ -7,7 +7,7 @@
 //2/14/2016 - Added DHT22 code
 
 //includes
-#include <WeatherStation.h>
+#include "WeatherStation.h"
 
 //Defines
 //#define DEBUG
