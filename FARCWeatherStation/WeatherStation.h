@@ -8,12 +8,12 @@
 class WeatherStation
 {
     public:
-        WeatherStation(int dhtPin);
+        WeatherStation();
         float tempF();
         float tempC();
-        int dhtPin();
+        float humidity();
+        float heatIndex();
     private:
-        int _dhtPin;
         float _temp;
 };
 

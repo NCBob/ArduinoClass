@@ -18,11 +18,11 @@
 */
 
 //Variable declarations
-WeatherStation _weatherStation(2);
+WeatherStation _weatherStation;
 // DHT _dht(DHTPIN, DHTTYPE);
 float _tempF = -99;
 float _tempC = -99;
-float _humidity = -99;
+float _humidity = -199;
 float _heatIndex = -99;
 unsigned long _lastMillis;
 unsigned int _interval = 5000;
@@ -34,12 +34,8 @@ void setup() {
   _lastMillis = 0;
   #ifdef DEBUG
     Serial.println("DEBUG MODE"); 
-    Serial.print("DHT Pin:");
-    Serial.println(_weatherStation.dhtPin());
   #else ifdef DEBUGRAW
     Serial.println("DEBUG RAW MODE"); 
-    Serial.print("DHT Pin:");
-    Serial.println(_weatherStation.dhtPin());
   #endif
 }
 
@@ -89,32 +85,32 @@ void Refresh()
 {
   if(_lastMillis + _interval < millis())
   {
+    GetTempF();
+    GetTempC();
     GetHumidity();
-    _weatherStation.tempF();
-    _weatherStation.tempC();
     GetHeatIndex();
     _lastMillis = millis();
     _refreshed = true;
   }
 }
 
-float GetHumidity()
-{
-
-}
-
 float GetTempF()
 {
-  // _tempF = _dht.readTemperature(true);
+  _tempF = _weatherStation.tempF();
 }
 
 float GetTempC()
 {
-  // _tempC = _dht.readTemperature();
+  _tempC = _weatherStation.tempC();
+}
+
+float GetHumidity()
+{
+  _humidity = _weatherStation.humidity();
 }
 
 float GetHeatIndex()
 {
-  // _heatIndex = _dht.computeHeatIndex(_tempF, _humidity);
+  _heatIndex = _weatherStation.heatIndex();
 }
 

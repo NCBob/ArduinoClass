@@ -3,24 +3,38 @@
 // Wrapper for all the components in the weather station
 #include "Arduino.h"
 #include "WeatherStation.h"
+#include <DHT.h>
 
-WeatherStation::WeatherStation(int dhtPin)
+#define DHTPIN 2
+#define DHTTYPE DHT22
+DHT _dht(DHTPIN, DHTTYPE);
+
+WeatherStation::WeatherStation()
 {
-    _dhtPin = dhtPin;
     _temp = -99;
 }
 
 float WeatherStation::tempF()
 {
-    return 78;
+    return _dht.readTemperature(true);  
 }
 
 float WeatherStation::tempC()
 {
-    return 26;
+    return _dht.readTemperature();
 }
 
-int WeatherStation::dhtPin()
+float WeatherStation::humidity()
 {
-    return _dhtPin;
+    float humidity = _dht.readHumidity();
+    if (isnan(humidity))
+    {
+        humidity = -199.99;
+    }
+    return humidity;
+}
+
+float WeatherStation::heatIndex()
+{
+    return _dht.computeHeatIndex(tempF(), humidity());
 }
