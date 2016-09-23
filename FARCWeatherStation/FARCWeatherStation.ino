@@ -5,6 +5,7 @@
 //2/11/2016
 //changes
 //2/14/2016 - Added DHT22 code
+//9/23/2016 - refactored into seperate file and finsihed DHT code
 
 //includes
 #include "WeatherStation.h"
