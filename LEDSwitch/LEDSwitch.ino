@@ -13,7 +13,6 @@ void loop()
 {
   if(!digitalRead(switchPin))
   {
-    switchPin = 3;
     ledState = !ledState;
     digitalWrite(ledPin, ledState);
   }
