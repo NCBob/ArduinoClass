@@ -12,7 +12,10 @@ class WeatherStation
         float tempF();
         float tempC();
         float humidity();
-        float heatIndex();
+        float heatIndexF();
+        float heatIndexC();
+        float pressure();
+        void init();
     private:
         float _temp;
 };

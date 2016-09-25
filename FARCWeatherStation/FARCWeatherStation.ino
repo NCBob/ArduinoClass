@@ -20,19 +20,16 @@
 
 //Variable declarations
 WeatherStation _weatherStation;
-// DHT _dht(DHTPIN, DHTTYPE);
-float _tempF = -99;
-float _tempC = -99;
-float _humidity = -199;
-float _heatIndex = -99;
 unsigned long _lastMillis;
 unsigned int _interval = 5000;
-boolean _refreshed = false;
+boolean _refresh = false;
 
-void setup() {
+void setup() 
+{
   Serial.begin(9600);
-  
-  _lastMillis = 0;
+
+  _weatherStation.init();
+  _lastMillis = millis() - _interval;
   #ifdef DEBUG
     Serial.println("DEBUG MODE"); 
   #else ifdef DEBUGRAW
@@ -41,77 +38,52 @@ void setup() {
 }
 
 void loop() {
-  Refresh();
+  CheckForRefresh();
   #ifdef DEBUG
-    if(_refreshed)
+    if(_refresh)
     {
-      Serial.print("Humidity:    ");
-      Serial.println(_humidity);
-      Serial.print("Temperature: ");
-      Serial.print(_tempF);
-      Serial.println(" F");
-      Serial.print("             ");
-      Serial.print(_tempC);
-      Serial.println(" C");
-      Serial.print("Heat Index:  ");
-      Serial.println(_heatIndex);
-      Serial.println("-------------------");
-      _refreshed = false;
+      PrintData();
     }
   #else ifdef DEBUGRAW
-    if(_refreshed)
+    if(_refresh)
     {
-      Serial.print("Humidity:    ");
-      Serial.println(_humidity);
-      Serial.print("Temperature: ");
-      Serial.print(_tempF);
-      Serial.println(" F");
-      Serial.print("             ");
-      Serial.print(_tempC);
-      Serial.println(" C");
-      Serial.print("Heat Index:  ");
-      Serial.println(_heatIndex);
-      Serial.println("-------------------");
+      PrintData();
       delay(1000);   Serial.print("Last Millis: ");
       Serial.println(_lastMillis);
       Serial.print("Curr Millis: ");
       Serial.println(millis());
       Serial.println("-------------------");
-      _refreshed = false;
     }
   #endif
+  _refresh = false;
 }
 
-void Refresh()
+void CheckForRefresh()
 {
   if(_lastMillis + _interval < millis())
   {
-    GetTempF();
-    GetTempC();
-    GetHumidity();
-    GetHeatIndex();
     _lastMillis = millis();
-    _refreshed = true;
+    _refresh = true;
   }
 }
 
-float GetTempF()
+void PrintData()
 {
-  _tempF = _weatherStation.tempF();
+       Serial.print("Humidity:    ");
+      Serial.println(_weatherStation.humidity());
+      Serial.print("Temperature: ");
+      Serial.print(_weatherStation.tempF());
+      Serial.println(" F");
+      Serial.print("Heat Index:  ");
+      Serial.print(_weatherStation.heatIndexF());
+      Serial.println(" F");
+      Serial.print("Temperature: ");
+      Serial.print(_weatherStation.tempC());
+      Serial.println(" C");
+      Serial.print("Heat Index:  ");
+      Serial.print(_weatherStation.heatIndexC());
+      Serial.println(" C");
+      Serial.print("Pressure:    ");
+      Serial.println(_weatherStation.pressure());
+      Serial.println("-------------------");
 }
-
-float GetTempC()
-{
-  _tempC = _weatherStation.tempC();
-}
-
-float GetHumidity()
-{
-  _humidity = _weatherStation.humidity();
-}
-
-float GetHeatIndex()
-{
-  _heatIndex = _weatherStation.heatIndex();
-}
-
