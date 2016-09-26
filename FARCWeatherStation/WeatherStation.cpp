@@ -11,11 +11,15 @@
 #define DHTTYPE DHT22
 DHT _dht(DHTPIN, DHTTYPE);
 Adafruit_BMP085_Unified bmp = Adafruit_BMP085_Unified(10085);
+int _soilPin = A0;
+int _soilMax = 750;
+int _soilMin = 80;
 
 bool bmpValid = false;
 
-WeatherStation::WeatherStation()
+WeatherStation::WeatherStation(int soilPin)
 {
+    _soilPin = soilPin;
 }
 
 float WeatherStation::tempF()
@@ -68,6 +72,28 @@ float WeatherStation::pressure()
     }
 
   return -199.99;
+}
+
+float WeatherStation::soilMoisture()
+{
+    float value = analogRead(_soilPin);
+
+    if(value > _soilMax)
+    {
+        value = _soilMax;
+    }
+    else if (value < _soilMin)
+    {
+        value = _soilMin;
+    }
+    value = (1 - ((value-_soilMin)/(_soilMax-_soilMin))) * 100;
+    
+    return value; 
+}
+
+float WeatherStation::rawSoilMoisture()
+{
+    return analogRead(_soilPin);
 }
 
 void WeatherStation::init()

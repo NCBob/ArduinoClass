@@ -13,13 +13,9 @@
 //Defines
 //#define DEBUG
 #define DEBUGRAW
-//pin DHT22 is connected to
-/*#define DHTPIN 2
-#define DHTTYPE DHT22
-*/
 
 //Variable declarations
-WeatherStation _weatherStation;
+WeatherStation _weatherStation(A1);
 unsigned long _lastMillis;
 unsigned int _interval = 5000;
 boolean _refresh = false;
@@ -48,7 +44,10 @@ void loop() {
     if(_refresh)
     {
       PrintData();
-      delay(1000);   Serial.print("Last Millis: ");
+      delay(1000);   
+      Serial.print("Soil:        ");
+      Serial.println(_weatherStation.rawSoilMoisture());
+      Serial.print("Last Millis: ");
       Serial.println(_lastMillis);
       Serial.print("Curr Millis: ");
       Serial.println(millis());
@@ -69,21 +68,24 @@ void CheckForRefresh()
 
 void PrintData()
 {
-       Serial.print("Humidity:    ");
+      Serial.print("Humidity:      ");
       Serial.println(_weatherStation.humidity());
-      Serial.print("Temperature: ");
+      Serial.print("Temperature:   ");
       Serial.print(_weatherStation.tempF());
       Serial.println(" F");
-      Serial.print("Heat Index:  ");
+      Serial.print("Heat Index:    ");
       Serial.print(_weatherStation.heatIndexF());
       Serial.println(" F");
-      Serial.print("Temperature: ");
+      Serial.print("Temperature:   ");
       Serial.print(_weatherStation.tempC());
       Serial.println(" C");
-      Serial.print("Heat Index:  ");
+      Serial.print("Heat Index:    ");
       Serial.print(_weatherStation.heatIndexC());
       Serial.println(" C");
-      Serial.print("Pressure:    ");
+      Serial.print("Pressure:      ");
       Serial.println(_weatherStation.pressure());
+      Serial.print("Soil Moisture: ");
+      Serial.print(_weatherStation.soilMoisture());
+      Serial.println(" %");
       Serial.println("-------------------");
 }

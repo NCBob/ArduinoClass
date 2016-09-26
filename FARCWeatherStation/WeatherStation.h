@@ -8,13 +8,15 @@
 class WeatherStation
 {
     public:
-        WeatherStation();
+        WeatherStation(int soilPin);
         float tempF();
         float tempC();
         float humidity();
         float heatIndexF();
         float heatIndexC();
         float pressure();
+        float soilMoisture();
+        float rawSoilMoisture();
         void init();
     private:
         float _temp;
