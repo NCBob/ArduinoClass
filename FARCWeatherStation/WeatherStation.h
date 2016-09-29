@@ -18,6 +18,7 @@ class WeatherStation
         float soilMoisture();
         float rawSoilMoisture();
         int lux();
+        uint16_t uv();
         void init();
     private:
         void GY30Init();

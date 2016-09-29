@@ -10,14 +10,20 @@
 
 #define DHTPIN 2
 #define DHTTYPE DHT22
+
 DHT _dht(DHTPIN, DHTTYPE);
 Adafruit_BMP085_Unified bmp = Adafruit_BMP085_Unified(10085);
 int _soilPin = A0;
 int _soilMax = 750;
 int _soilMin = 80;
-int _GY30addr = 0x23; // GY-30 Address
+int _GY30addr = 0x23;
 byte _gy30Buff[2];
 bool bmpValid = false;
+int _GY6070addr = 0x38;
+int _IT_1_2 = 0x0; 
+int _IT_1   = 0x1; 
+int _IT_2   = 0x2; 
+int _IT_4   = 0x3; 
 
 WeatherStation::WeatherStation(int soilPin)
 {
@@ -146,19 +152,33 @@ void WeatherStation::GY30Init()
     Wire.beginTransmission(_GY30addr);
     Wire.write(0x10); // 1 [lux] resolution
     Wire.endTransmission();  
+    Wire.beginTransmission(_GY6070addr);
+    Wire.write((_IT_1<<2) | 0x02);
+    Wire.endTransmission();
+    delay(500);
+}
+
+uint16_t WeatherStation::uv()
+{
+    byte msb=0, lsb=0;
+    uint16_t val = 99;
+
+    Wire.requestFrom(_GY6070addr+1, 1); //MSB
+    delay(1);
+    if(Wire.available())
+    {
+        msb = Wire.read();
+    }
+
+    Wire.requestFrom(_GY6070addr+0, 1); //LSB
+    delay(1);
+    if(Wire.available())
+    {
+        lsb = Wire.read();
+    }
+
+    val = (msb<<8) | lsb;
+    return (uint16_t)val;
 }
 
 
-
-// byte BH1750_Read(int address){
-  
-//   byte i=0;
-//   Wire.beginTransmission(address);
-//   Wire.requestFrom(address, 2);
-//   while(Wire.available()){
-//     buff[i] = Wire.read(); 
-//     i++;
-//   }
-//   Wire.endTransmission();  
-//   return i;
-// }

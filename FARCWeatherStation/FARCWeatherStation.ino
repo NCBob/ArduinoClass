@@ -8,6 +8,7 @@
 //9/23/2016 - refactored into seperate file and finsihed DHT code
 //9/28/2016 - Fixed the heat index C reading from the WeatherStation class
 //9/28/2016 - Added code for GY30 Light Intensity sensors
+//9/28/2016 - Added code for GYVEML6070 UV sensor
 
 //includes
 #include "WeatherStation.h"
@@ -92,5 +93,8 @@ void PrintData()
       Serial.print("Light Intensity: ");
       Serial.print(_weatherStation.lux());
       Serial.println(" lux");
+      Serial.print("UV:              ");
+      Serial.print(_weatherStation.uv());
+      Serial.println(" uW/cm2");
       Serial.println("-------------------");
 }
