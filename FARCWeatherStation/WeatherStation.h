@@ -17,8 +17,11 @@ class WeatherStation
         float pressure();
         float soilMoisture();
         float rawSoilMoisture();
+        int lux();
         void init();
     private:
+        void GY30Init();
+        byte GY30Read();
         float _temp;
 };
 

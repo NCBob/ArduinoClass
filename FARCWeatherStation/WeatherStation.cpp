@@ -6,6 +6,7 @@
 #include <DHT.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP085_U.h>
+#include <Wire.h>
 
 #define DHTPIN 2
 #define DHTTYPE DHT22
@@ -14,7 +15,8 @@ Adafruit_BMP085_Unified bmp = Adafruit_BMP085_Unified(10085);
 int _soilPin = A0;
 int _soilMax = 750;
 int _soilMin = 80;
-
+int _GY30addr = 0x23; // GY-30 Address
+byte _gy30Buff[2];
 bool bmpValid = false;
 
 WeatherStation::WeatherStation(int soilPin)
@@ -59,7 +61,11 @@ float WeatherStation::heatIndexF()
 
 float WeatherStation::heatIndexC()
 {
-    return _dht.computeHeatIndex(tempC(), humidity());
+    //(°F  -  32)  x  5/9
+    float heatIndex = heatIndexF();
+    heatIndex = heatIndex - 32;
+    heatIndex = heatIndex * (5.0/9.0);
+    return heatIndex;
 }
 
 float WeatherStation::pressure()
@@ -98,8 +104,61 @@ float WeatherStation::rawSoilMoisture()
 
 void WeatherStation::init()
 {
+    Wire.begin();
+    GY30Init();
     if(bmp.begin())
     {
         bmpValid = true;
     }
 }
+
+int WeatherStation::lux()
+{
+    float val = -99.99;
+
+    if(GY30Read() == 2)
+    {
+        val = ((_gy30Buff[0]<<8)|_gy30Buff[1])/1.2;
+        if (val<0)
+        {
+            val = -99.99;
+        }
+    }
+    return (int)val;
+}
+
+byte WeatherStation::GY30Read()
+{
+    byte i=0;
+    Wire.beginTransmission(_GY30addr);
+    Wire.requestFrom(_GY30addr, 2);
+    while(Wire.available())
+    {
+        _gy30Buff[i] = Wire.read(); 
+        i++;
+    }
+    Wire.endTransmission();  
+    return i;
+}
+
+void WeatherStation::GY30Init()
+{
+    Wire.beginTransmission(_GY30addr);
+    Wire.write(0x10); // 1 [lux] resolution
+    Wire.endTransmission();  
+}
+
+
+
+// byte BH1750_Read(int address){
+  
+//   byte i=0;
+//   Wire.beginTransmission(address);
+//   Wire.requestFrom(address, 2);
+//   while(Wire.available()){
+//     buff[i] = Wire.read(); 
+//     i++;
+//   }
+//   Wire.endTransmission();  
+//   return i;
+// }
