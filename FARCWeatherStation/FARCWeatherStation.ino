@@ -9,6 +9,7 @@
 //9/28/2016 - Fixed the heat index C reading from the WeatherStation class
 //9/28/2016 - Added code for GY30 Light Intensity sensors
 //9/28/2016 - Added code for GYVEML6070 UV sensor
+//9/28/2016 - Added code for RTC module
 
 //includes
 #include "WeatherStation.h"
@@ -28,6 +29,7 @@ void setup()
   Serial.begin(9600);
 
   _weatherStation.init();
+  _weatherStation.setTime(2016,10,1,8,0,0);
   _lastMillis = millis() - _interval;
   #ifdef DEBUG
     Serial.println("DEBUG MODE"); 
@@ -71,30 +73,32 @@ void CheckForRefresh()
 
 void PrintData()
 {
-      Serial.print("Humidity:        ");
-      Serial.println(_weatherStation.humidity());
-      Serial.print("Temperature:     ");
-      Serial.print(_weatherStation.tempF());
-      Serial.println(" F");
-      Serial.print("Heat Index:      ");
-      Serial.print(_weatherStation.heatIndexF());
-      Serial.println(" F");
-      Serial.print("Temperature:     ");
-      Serial.print(_weatherStation.tempC());
-      Serial.println(" C");
-      Serial.print("Heat Index:      ");
-      Serial.print(_weatherStation.heatIndexC());
-      Serial.println(" C");
-      Serial.print("Pressure:        ");
-      Serial.println(_weatherStation.pressure());
-      Serial.print("Soil Moisture:   ");
-      Serial.print(_weatherStation.soilMoisture());
-      Serial.println(" %");
-      Serial.print("Light Intensity: ");
-      Serial.print(_weatherStation.lux());
-      Serial.println(" lux");
-      Serial.print("UV:              ");
-      Serial.print(_weatherStation.uv());
-      Serial.println(" uW/cm2");
-      Serial.println("-------------------");
+  Serial.print("Time:            ");
+  Serial.println(_weatherStation.time());
+  Serial.print("Humidity:        ");
+  Serial.println(_weatherStation.humidity());
+  Serial.print("Temperature:     ");
+  Serial.print(_weatherStation.tempF());
+  Serial.println(" F");
+  Serial.print("Heat Index:      ");
+  Serial.print(_weatherStation.heatIndexF());
+  Serial.println(" F");
+  Serial.print("Temperature:     ");
+  Serial.print(_weatherStation.tempC());
+  Serial.println(" C");
+  Serial.print("Heat Index:      ");
+  Serial.print(_weatherStation.heatIndexC());
+  Serial.println(" C");
+  Serial.print("Pressure:        ");
+  Serial.println(_weatherStation.pressure());
+  Serial.print("Soil Moisture:   ");
+  Serial.print(_weatherStation.soilMoisture());
+  Serial.println(" %");
+  Serial.print("Light Intensity: ");
+  Serial.print(_weatherStation.lux());
+  Serial.println(" lux");
+  Serial.print("UV:              ");
+  Serial.print(_weatherStation.uv());
+  Serial.println(" uW/cm2");
+  Serial.println("-------------------");
 }

@@ -7,6 +7,7 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP085_U.h>
 #include <Wire.h>
+#include <RTClib.h>
 
 #define DHTPIN 2
 #define DHTTYPE DHT22
@@ -24,6 +25,7 @@ int _IT_1_2 = 0x0;
 int _IT_1   = 0x1; 
 int _IT_2   = 0x2; 
 int _IT_4   = 0x3; 
+RTC_Millis rtc;
 
 WeatherStation::WeatherStation(int soilPin)
 {
@@ -181,4 +183,50 @@ uint16_t WeatherStation::uv()
     return (uint16_t)val;
 }
 
+String WeatherStation::time()
+{
+  DateTime now = rtc.now();
+  String dateString;
+  dateString = padValue(now.month());
+  dateString += "/";
+  dateString += padValue(now.day());
+  dateString += "/";
+  dateString += padValue(now.year());
+  dateString += " ";
+  dateString += padValue(now.hour());
+  dateString += ":";
+  dateString += padValue(now.minute());
+  dateString += ":";
+  dateString += padValue(now.second());
+  
+  return dateString;
+}
 
+String WeatherStation::padValue(int value)
+{
+    String returnVal;
+    
+    if(value < 10){
+        returnVal = "0";
+        returnVal += value;
+    }
+    else if (value < 100)
+    {
+        returnVal = String(value);
+    }
+    else if (value > 1900)
+    {
+      returnVal = String(value).substring(2);
+    }
+    else
+    {
+      returnVal = "99";
+    }
+
+    return returnVal;
+}
+
+void WeatherStation::setTime(float setYear, float setMonth, float setDay, float setHour, float setMinute, float setSecond)
+{
+  rtc.adjust(DateTime(setYear, setMonth, setDay, setHour, setMinute, setSecond));    
+}

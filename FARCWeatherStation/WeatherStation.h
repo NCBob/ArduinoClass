@@ -18,12 +18,15 @@ class WeatherStation
         float soilMoisture();
         float rawSoilMoisture();
         int lux();
+        String time();
+        void setTime(float setYear, float setMonth, float setDay, float setHour, float setMinute, float setSecond);
         uint16_t uv();
         void init();
     private:
         void GY30Init();
         byte GY30Read();
         float _temp;
+        String padValue(int value);
 };
 
 #endif
